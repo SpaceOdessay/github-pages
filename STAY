@@ -1,0 +1,140 @@
+import turtle
+import colorsys
+import math
+import random
+
+def setup_turtle_screen():
+    """
+    Initializes the turtle screen and a turtle object.
+    This function is a wrapper to manage screen setup.
+    """
+    try:
+        # Attempts to manage the turtle screen for compatibility with different IDEs
+        turtle.TurtleScreen._RUNNING = True
+    except AttributeError:
+        pass
+    
+    t = turtle.Turtle()
+    t.speed(0)
+    turtle.bgcolor("black")
+    return t
+
+def draw_flower(t, posx, posy):
+    """Draws a flower using fractal-like patterns."""
+    t.penup()
+    t.goto(posx, posy)
+    t.pendown()
+    h = 0
+    for i in range(16):
+        for j in range(18):
+            c = colorsys.hsv_to_rgb(0.125, 1, 1)
+            t.color(c)
+            h += 0.005
+            t.rt(90)
+            t.circle(150 - j * 6, 90)
+            t.lt(90)
+            t.circle(150 - j * 6, 90)
+            t.rt(180)
+            t.circle(40, 24)
+    # Genera la parte central de la flor
+    t.color("black")
+    t.shape("turtle")
+    t.fillcolor("brown")
+    phi = 137.508 * (math.pi / 180.0)
+    for i in range(200):
+        r = 4 * math.sqrt(i)
+        theta = i * phi
+        x = r * math.cos(theta)
+        y = r * math.sin(theta)
+        posx1 = posx + x
+        posy1 = posy + y + 40
+        t.penup()
+        t.goto(posx1, posy1)
+        t.setheading(i * 137.508)
+        t.pendown()
+        t.stamp()
+
+def draw_stem_with_leaf(t, x, y):
+    """Draws a stem and a leaf for the flower."""
+    t.penup()
+    t.goto(x, y)
+    t.pendown()
+    pos_leaf_y = y - 200
+
+    # Dibuja el tallo recto y más grande
+    c = colorsys.hsv_to_rgb(0.20, 1, 0.5)
+    t.color(c)
+    t.pensize(12)
+    t.setheading(270)
+    t.fd(200)
+
+    # Dibuja el tallo curvo
+    t.setheading(100)
+    t.circle(100, -90)
+    t.begin_fill()
+    for _ in range(5):
+        t.forward(11)
+        t.right(144)
+    t.end_fill()
+
+    # Dibuja la hoja más grande
+    t.penup()
+    t.goto(x, pos_leaf_y)
+    t.pensize(2)
+    t.begin_fill()
+    t.setheading(135)
+    t.circle(50, 90)
+    t.setheading(45)
+    t.circle(50, 90)
+    t.end_fill()
+
+    # Restaura el color y el grosor del lápiz
+    t.penup()
+    t.pensize(1)
+    t.color("black")
+
+def draw_random_start(t, amount):
+    """Draws a specified number of stars at random positions."""
+    for _ in range(amount):
+        x = random.randint(-400, 400)
+        y = random.randint(-400, 400)
+        t.penup()
+        t.goto(x, y)
+        t.pendown()
+        star_color = colorsys.hsv_to_rgb(random.random(), 1, 1)
+        t.color(star_color)
+        t.begin_fill()
+        for i in range(5):
+            t.forward(5)
+            t.right(144)
+        t.end_fill()
+
+def write_messages(t):
+    """Writes personalized messages on the screen."""
+    t.hideturtle()
+    t.penup()
+    t.goto(0, 350)
+    t.pendown()
+    t.color("white")
+    t.write("bonita", align="center", font=("Arial", 11, "normal"))
+    t.penup()
+    t.goto(0, 330)
+    t.pendown()
+    t.write("SPD", align="center", font=("Arial", 11, "normal"))
+    t.penup()
+    t.goto(0, -300)
+    t.pendown()
+    t.write("WILL U STAY", align="center", font=("Arial", 11, "normal"))
+
+def main():
+    """Main function to draw the entire scene."""
+    t = setup_turtle_screen()
+    draw_stem_with_leaf(t, 0, -50)
+    draw_flower(t, 0, 50)
+    write_messages(t)
+    draw_random_start(t, 50)
+    t.hideturtle()
+    turtle.done()
+
+if __name__ == "__main__":
+    main()
